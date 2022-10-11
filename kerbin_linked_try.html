@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+<!-- dropdown list try! -->
+
+<body style="background-image: url(kerbin_bg.png);
+             background-repeat: no-repeat;
+             background-size: auto 100vh;">
+
+    <meta charset="utf-8">
+    <script type="text/javascript">
+
+        // planet structure and planet list
+
+        class planetSystem {
+            constructor(name, deltaV, next = null) {
+                this.name = name;
+                this.deltaV = deltaV;
+                this.next = next;
+            };
+        };
+
+        //Kerbin
+
+        let kerbin = new planetSystem('Kerbin', 0, null);
+        let kerbLowOrbit = new planetSystem('Kerbin low orbit', 4500, kerbin);
+        let keostationaryOrbit = new planetSystem('Keostationary orbit', 435, kerbLowOrbit);
+        let keostationaryTransfer = new planetSystem('Keostationary transfer', 80, kerbLowOrbit);
+        // To the MUN
+        let munTransfer = new planetSystem('Mun transfer', 180, keostationaryTransfer);
+        let munEscape = new planetSystem('Mun escape', 80, munTransfer);
+        let munLowOrbit = new planetSystem('Mun low orbit', 230, munEscape);
+        let mun = new planetSystem('Mun', 580, munLowOrbit);
+        // To Minmus
+        let minmusTranfer = new planetSystem('Minmus transfer', 70, munTransfer);              /* +340 max possible deltaV change */
+        let minmusEscape = new planetSystem('Minmus escape', 90, minmusTranfer);
+        let minmusLowOrbit = new planetSystem('Minmus low orbit', 70, minmusEscape);
+        let minmus = new planetSystem('Minmus', 180, minmusLowOrbit);
+        // Out of the Kerbin
+        let kerbinEscape = new planetSystem('Kerbin escape', 20, minmusTranfer);
+
+        // To Eve, Gilly, Moho and Kerbol
+
+        let eveTransfer = new planetSystem('Eve transfer', 90, kerbinEscape);                      /* +430 max possible deltaV change */
+        //Eve / Gilly
+        let eveEscape = new planetSystem('Eve escape', 80, eveTransfer);
+        let gillyTransfer = new planetSystem('Gilly transfer', 60, eveEscape);                 /* +930 max possible deltaV change */
+        let eveLowOrbit = new planetSystem('Eve low orbit', 1270, gillyTransfer);
+        let gillyEscape = new planetSystem('Gilly escape', 400, gillyTransfer);
+        let gillyLowOrbit = new planetSystem('Gilly low orbit', 10, gillyEscape);
+        let gilly = new planetSystem('Gilly', 30, gillyLowOrbit);
+        let eve = new planetSystem('Eve', 12000, eveLowOrbit);
+        //Moho
+        let mohoTransfer = new planetSystem('Moho transfer', 670, eveTransfer);                /* +2520 max possible deltaVchange */
+        let mohoEscape = new planetSystem('Moho escape', 2090, mohoTransfer);
+        let mohoLowOrbit = new planetSystem('Moho low orbit', 320, mohoEscape);
+        let moho = new planetSystem('Moho', 870, mohoLowOrbit);
+        //Kerbol
+        let kerbolTransfer = new planetSystem('Kerbol transfer', 5150, mohoTransfer);
+        let lowKerbolOrbit = new planetSystem('Low Kerbol orbit', 26820, kerbolTransfer);
+        let kerbol = new planetSystem('Kerbol', 66940, lowKerbolOrbit);
+
+        // To Duna, Ike, Dres, Jool, Pol, Bop, Tylo, Vall, Laythe, Eeloo and Kerbol escape
+
+        let dunaTransfer = new planetSystem('Duna transfer', 130, kerbinEscape);                   /* +10 max possible deltaVchange */
+        // Duna / Ike
+        let dunaEscape = new planetSystem('Duna escape', 250, dunaTransfer);
+        let ikeTransfer = new planetSystem('Ike transfer', 30, dunaEscape);
+        let ikeEscape = new planetSystem('Ike escape', 30, ikeTransfer);
+        let ikeLowOrbit = new planetSystem('Ike low orbit', 150, ikeEscape);
+        let ike = new planetSystem('Ike', 390, ikeLowOrbit);
+        let dunaLowOrbit = new planetSystem('Duna low orbit', 330, ikeTransfer);
+        let duna = new planetSystem('Duna', 1300, dunaLowOrbit);
+        // Dres
+        let dresTransfer = new planetSystem('Dres transfer', 480, dunaTransfer);                   /* +1010 max possible deltaVchange */
+        let dresEscape = new planetSystem('Dres escape', 1140, dresTransfer);
+        let dresLowOrbit = new planetSystem('Dres low orbit', 150, dresEscape);
+        let dres = new planetSystem('Dres', 430, dresLowOrbit);
+        // Jool, Pol, Bop, Tylo, Vall, Laythe
+        let joolTransfer = new planetSystem('Jool transfer', 370, dresTransfer);                   /* +270 max possible deltaVchange */
+        let joolEscape = new planetSystem('Jool escape', 160, joolTransfer);
+        let polTransfer = new planetSystem('Pol transfer', 160, joolEscape);                   /* +700 max possible deltaVchange */
+        let polEscape = new planetSystem('Pol escape', 770, polTransfer);
+        let polLowOrbit = new planetSystem('Pol low orbit', 50, polEscape);
+        let pol = new planetSystem('Pol', 130, polLowOrbit);
+        let bopTransfer = new planetSystem('Bop transfer', 60, polTransfer);                   /* +2440 max possible deltaVchange */
+        let bopEscape = new planetSystem('Bop escape', 830, bopTransfer);
+        let bopLowOrbit = new planetSystem('Bop low orbit', 70, bopEscape);
+        let bop = new planetSystem('Bop', 220, bopLowOrbit);
+        let tyloTransfer = new planetSystem('Tylo transfer', 180, bopTransfer);
+        let tyloEscape = new planetSystem('Tylo escape', 240, tyloTransfer);
+        let tyloLowOrbit = new planetSystem('Tylo low orbit', 860, tyloEscape);
+        let tylo = new planetSystem('Tylo', 2270, tyloLowOrbit);
+        let vallTransfer = new planetSystem('Vall transfer', 220, tyloTransfer);
+        let vallEscape = new planetSystem('Vall escape', 580, vallTransfer);
+        let vallLowOrbit = new planetSystem('Vall low orbit', 330, vallEscape);
+        let vall = new planetSystem('Vall', 860, vallLowOrbit);
+        let laytheTransfer = new planetSystem('Laythe transfer', 310, vallTransfer);
+        let laytheEscape = new planetSystem('Laythe escape', 290, laytheTransfer);
+        let laytheLowOrbit = new planetSystem('Laythe low orbit', 780, laytheEscape);
+        let laythe = new planetSystem('Laythe', 3200, laytheLowOrbit);
+        let joolLowOrbit = new planetSystem('Jool low orbit', 1880, laytheTransfer);
+        let jool = new planetSystem('Jool', 22000, joolLowOrbit);
+        // Eeloo and Kerbol Escape
+        let eelooTransfer = new planetSystem('Eeloo transfer', 160, joolTransfer);             /* +1330 max possible deltaVchange */
+        let kerbolEscape = new planetSystem('Kerbol escape', 650, eelooTransfer);
+        let eelooEscape = new planetSystem('Eeloo escape', 1130, eelooTransfer);
+        let eelooLowOrbit = new planetSystem('Eeloo low orbit', 240, eelooEscape);
+        let eeloo = new planetSystem('Eeloo', 620, eelooLowOrbit);
+
+        // an array of planets
+
+        let destPoints = [kerbin, mun, minmus, eve, gilly, moho, duna, ike, dres, jool, laythe, vall, tylo, bop, pol, eeloo, kerbol];
+
+        //function to link html result with array
+        function changeHiddenInput(objDropDown) {
+            let sumDV = 0;
+            let answer = destPoints[objDropDown.value];
+            let result = document.getElementById("result");
+            result.innerHTML = "";
+            do {
+                sumDV = sumDV + answer.deltaV;
+                result.innerHTML = result.innerHTML + answer.deltaV + " to " + answer.name + "<br>";
+                answer = answer.next;
+            } while (answer);
+            result.innerHTML = result.innerHTML + '--------------------------------- <br>' + sumDV + ' dV in total<br>';
+            if (objDropDown.value != 0) {
+                sumBack = sumDV * 2 - 4500;
+                result.innerHTML = result.innerHTML + sumBack + " dV if you want to return<br>"
+            };
+        }
+
+    </script>
+
+    <!-- HTML part of the code - dropdown box -->
+
+    <div style="text-align: center; color: aqua;">
+        <h1> Choose the planet</h1>
+        <div style="display: inline-block;">
+            <select id="destination" style="position: absolute; top: 6%; left: 2%">
+                <option selected="true" value="0">Kerbin</option>
+                <optgroup label="Kerbin's moons:">
+                    <option value="1">Mun</option>
+                    <option value="2">Minmus</option>
+                </optgroup>
+                <option value="3">Eve</option>
+                <optgroup label="Eve's moons:">
+                    <option value="4">Gilly</option>
+                </optgroup>
+                <option value="5">Moho</option>
+                <option value="6">Duna</option>
+                <optgroup label="Duna's moons:">
+                    <option value="7">Ike</option>
+                </optgroup>
+                <option value="8">Dres</option>
+                <option value="9">Jool</option>
+                <optgroup label="Jool's moons:">
+                    <option value="10">Laythe</option>
+                    <option value="11">Vall</option>
+                    <option value="12">Tylo</option>
+                    <option value="13">Bop</option>
+                    <option value="14">Pol</option>
+                </optgroup>
+                <option value="15">Eeloo</option>
+                <option value="16">Kerbol</option>
+            </select>
+
+            <!-- button -->
+            <input type="hidden" id="choosenPlanet" value="" />
+            <button style="position: absolute; top: 6%; left: 15%" onclick="changeHiddenInput(destination)">Calculate
+                delta-V</button>
+            <div id="result"></div>
+        </div>
+        <!-- image of the Kerbol system -->
+        <div style="display: inline-block;"></div>
+        <!-- <img src="kerbalspacemap.png" alt="here should be a map of the galaxy" style="position: absolute; right: 5%" /> -->
+    </div>
+    </div>
+
+</body>
+
+</html>
